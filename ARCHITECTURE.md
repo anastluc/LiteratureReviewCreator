@@ -3,8 +3,8 @@
 A pipeline that turns a **concept note** into a complete, queryable **literature knowledge base** (KB),
 a holistic cited report, and an interactive map of the literature.
 
-Status: **backend implemented** (CLI stages 0–9, API, skills; tested with mocked services + a live smoke run).
-Frontend (React/deck.gl) not started yet.
+Status: **implemented**: CLI stages 0–9, API, skills and the React frontend (mocked unit tests on both sides,
+plus a live run on a 148-paper OpenAlex demo project).
 
 ---
 
@@ -33,6 +33,8 @@ Frontend (React/deck.gl) not started yet.
 | D19 | Paper id | **OpenAlex W-id**; fallback `h` + sha1(DOI or normalised title)[:10] | Also the `[paper_id]` citation key in reports |
 | D20 | Tests | **Mocked unit tests** (respx HTTP mocks, fake LLM, hashing embedders) | Live smoke run done manually |
 | D21 | Build pacing | Backend end-to-end first, review, then the frontend | |
+| D22 | Frontend stack | **Tailwind + shadcn/ui**, **TanStack Query + Router**, PDFs open in a **browser tab** | SSE over `fetch` (POST); map colours from a validated 8-slot categorical palette, 9th+ cluster folds into "Other" |
+| D23 | GROBID image | **`grobid/grobid:0.8.1`** (full, deep-learning models) | ~10 GB; CPU |
 
 ---
 
@@ -224,7 +226,8 @@ FastAPI endpoints:
 
 React app pages: **Ask** (chat with citations → click opens paper panel), **Map** (deck.gl `ScatterplotLayer` +
 `LineLayer` for edges; colour by cluster/RQ/year; search highlight; lasso → "ask about selection"), **Papers**
-(table with status), **Reports**. Production build is served statically by FastAPI.
+(table with status), **Reports**. Production build is served statically by FastAPI, with a single-page-app
+fallback (unknown non-`/api` paths return `index.html`). Details: `frontend/README.md`.
 
 ---
 
@@ -235,8 +238,5 @@ React app pages: **Ask** (chat with citations → click opens paper panel), **Ma
 - Downloaded PDFs/TEI are treated as untrusted data (parsed, never executed).
 
 ## 7. Open items
-- GROBID image: `grobid/grobid:0.8.1` (full, deep-learning models, ~10 GB) vs `lfoppiano/grobid:0.8.1`
-  (CRF-only, much smaller, slightly lower accuracy). Not pulled yet.
 - EZproxy prefix for your university (goes in `.env`); `UNPAYWALL_EMAIL` for the Unpaywall resolver.
 - `uv run playwright install chromium`, then `lit login` once, before the browser fallback.
-- Frontend (D14/D15): React + Vite + TS + deck.gl, next build step.

@@ -12,6 +12,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 from starlette.concurrency import iterate_in_threadpool
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from ..config import REPO_ROOT
 from ..db import authors, rq_map
@@ -192,6 +193,19 @@ def get_report(p: str, name: str) -> dict:
     return {"name": name, "markdown": f.read_text(encoding="utf-8")}
 
 
+class SPAStaticFiles(StaticFiles):
+    """Static files with a single-page-app fallback: unknown non-API paths (e.g. /p/demo/map) get index.html."""
+
+    async def get_response(self, path: str, scope):
+        try:
+            return await super().get_response(path, scope)
+        except StarletteHTTPException as e:
+            first = path.replace("\\", "/").split("/", 1)[0]
+            if e.status_code != 404 or first in ("api", "assets"):
+                raise
+            return await super().get_response("index.html", scope)
+
+
 _dist = REPO_ROOT / "frontend" / "dist"
 if _dist.exists():
-    app.mount("/", StaticFiles(directory=_dist, html=True), name="frontend")
+    app.mount("/", SPAStaticFiles(directory=_dist, html=True), name="frontend")

@@ -10,6 +10,7 @@ uv sync                      # Python 3.12 env + deps (first run downloads torch
 cp .env.example .env         # ANTHROPIC_API_KEY, UNPAYWALL_EMAIL, EZPROXY_PREFIX (S2 key optional)
 docker compose up -d grobid  # PDF parser (Docker Desktop must be running)
 uv run playwright install chromium   # for the paywall browser fallback
+npm --prefix frontend install && npm --prefix frontend run build   # web UI (Node 20+)
 ```
 
 ## Workflow
@@ -28,7 +29,7 @@ uv run lit parse -p my-topic
 uv run lit index -p my-topic
 uv run lit map -p my-topic
 uv run lit report -p my-topic     # or skill: write-report
-uv run lit serve                  # http://localhost:8000
+uv run lit serve                  # web UI at http://localhost:8000 (Ask, Map, Papers, Reports)
 ```
 
 Helpers: `lit status -p <slug>` (progress), `lit run -p <slug>` (run every due stage, stopping at the 👤
@@ -41,4 +42,9 @@ PDFs the pipeline can't get are listed in `reports/missing_papers.csv`; drop the
 ```bash
 uv run pytest      # offline: HTTP, LLM and embedding models are mocked
 uv run ruff check src tests
+npm --prefix frontend test        # frontend unit tests (Vitest)
 ```
+
+## Frontend development
+`npm --prefix frontend run dev` serves the UI with hot reload at http://localhost:5173 and proxies `/api` to a
+running `uv run lit serve`. See [frontend/README.md](frontend/README.md).
