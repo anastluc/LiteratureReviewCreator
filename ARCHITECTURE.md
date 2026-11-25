@@ -34,7 +34,7 @@ plus a live run on a 148-paper OpenAlex demo project).
 | D20 | Tests | **Mocked unit tests** (respx HTTP mocks, fake LLM, hashing embedders) | Live smoke run done manually |
 | D21 | Build pacing | Backend end-to-end first, review, then the frontend | |
 | D22 | Frontend stack | **Tailwind + shadcn/ui**, **TanStack Query + Router**, PDFs open in a **browser tab** | SSE over `fetch` (POST); map colours from a validated 8-slot categorical palette, 9th+ cluster folds into "Other" |
-| D23 | GROBID image | **`grobid/grobid:0.8.1`** (full, deep-learning models) | ~10 GB; CPU |
+| D23 | GROBID image | **`grobid/grobid:0.8.1`** (full, deep-learning models) | 32.5 GB on disk; uses ~4.3 GB RAM while parsing, so Docker Desktop needs >= 6 GB (its 2 GB default crashes it); CPU |
 
 ---
 

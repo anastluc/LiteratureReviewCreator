@@ -8,7 +8,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the design and decision log.
 ```bash
 uv sync                      # Python 3.12 env + deps (first run downloads torch, a few hundred MB)
 cp .env.example .env         # OPENROUTER_API_KEY (+ LITKB_MODEL), UNPAYWALL_EMAIL, EZPROXY_PREFIX
-docker compose up -d grobid  # PDF parser (Docker Desktop must be running)
+docker compose up -d grobid  # PDF parser: 32.5 GB image, needs Docker Desktop memory >= 6 GB (Settings > Resources)
 uv run playwright install chromium   # for the paywall browser fallback
 npm --prefix frontend install && npm --prefix frontend run build   # web UI (Node 20+)
 ```
