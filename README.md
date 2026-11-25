@@ -7,7 +7,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the design and decision log.
 ## Setup
 ```bash
 uv sync                      # Python 3.12 env + deps (first run downloads torch, a few hundred MB)
-cp .env.example .env         # ANTHROPIC_API_KEY, UNPAYWALL_EMAIL, EZPROXY_PREFIX (S2 key optional)
+cp .env.example .env         # OPENROUTER_API_KEY (+ LITKB_MODEL), UNPAYWALL_EMAIL, EZPROXY_PREFIX
 docker compose up -d grobid  # PDF parser (Docker Desktop must be running)
 uv run playwright install chromium   # for the paywall browser fallback
 npm --prefix frontend install && npm --prefix frontend run build   # web UI (Node 20+)

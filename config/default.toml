@@ -5,13 +5,16 @@ projects_dir = "projects"
 pdf_cache_dir = "library/pdfs"
 browser_profile_dir = "~/.litkb/browser-profile"
 
-[llm.synthesis]           # report writing, RAG answers
-provider = "anthropic"    # anthropic | openai_compatible
-model = "claude-opus-5-5"
+[llm]                      # .env overrides: LITKB_PROVIDER, LITKB_MODEL, LITKB_MODEL_SYNTHESIS, LITKB_MODEL_FAST
+provider = "openrouter"    # openrouter | anthropic | openai_compatible
+model = "google/gemini-4-hydrogen"
 
-[llm.fast]                # RQ drafting, cluster labels
-provider = "anthropic"
-model = "claude-sonnet-5-5"
+[llm.synthesis]            # report writing, RAG answers; optional provider/model overrides
+[llm.fast]                 # RQ drafting, cluster labels; optional provider/model overrides
+
+[llm.openrouter]
+base_url = "https://openrouter.ai/api/v1"
+reasoning_max_tokens = 2048   # hidden-reasoning budget, added on top of each answer's max_tokens (0 = model default)
 
 [llm.openai_compatible]
 base_url = "http://localhost:1234/v1"   # LM Studio / Ollama / OpenAI

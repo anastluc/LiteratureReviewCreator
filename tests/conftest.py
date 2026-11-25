@@ -60,9 +60,12 @@ class FakeLLM:
 
 @pytest.fixture(autouse=True)
 def isolated(tmp_path, monkeypatch):
+    monkeypatch.setattr("litkb.config.load_dotenv", lambda *a, **k: False)  # never read the real .env
     monkeypatch.setenv("LITKB_PROJECTS_DIR", str(tmp_path / "projects"))
     monkeypatch.setenv("LITKB_PDF_CACHE_DIR", str(tmp_path / "pdfs"))
-    for k in ("UNPAYWALL_EMAIL", "OPENALEX_EMAIL", "SEMANTIC_SCHOLAR_API_KEY", "EZPROXY_PREFIX"):
+    for k in ("UNPAYWALL_EMAIL", "OPENALEX_EMAIL", "SEMANTIC_SCHOLAR_API_KEY", "EZPROXY_PREFIX", "OPENROUTER_API_KEY",
+              "LITKB_PROVIDER", "LITKB_MODEL", "LITKB_MODEL_SYNTHESIS", "LITKB_MODEL_FAST",
+              "LITKB_PROVIDER_SYNTHESIS", "LITKB_PROVIDER_FAST"):
         monkeypatch.delenv(k, raising=False)
     embed.set_embedders(HashEmbedder(32), HashEmbedder(24))
     yield

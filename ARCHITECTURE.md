@@ -13,7 +13,7 @@ plus a live run on a 148-paper OpenAlex demo project).
 | # | Area | Decision | Notes |
 |---|------|----------|-------|
 | D1 | Orchestration | **Hybrid**: Python package (`litkb`, CLI `lit`) for deterministic work; **Claude Code skills** for judgment-heavy steps | Skills live in `.claude/skills/` and call the CLI |
-| D2 | LLM | **Pluggable provider** interface | Default: Anthropic (Opus 5.5 for synthesis, Sonnet 5.5 for cheap tasks); OpenAI-compatible adapter covers Ollama / LM Studio |
+| D2 | LLM | **Pluggable provider** interface; default **OpenRouter** with `google/gemini-4-hydrogen` | Model set in `.env` (`LITKB_MODEL`, optional `LITKB_MODEL_SYNTHESIS` / `LITKB_MODEL_FAST`); Anthropic-direct and OpenAI-compatible (Ollama / LM Studio) kept as alternatives via `LITKB_PROVIDER` |
 | D3 | Undermind | **Undermind MCP connector**, driven by a Claude Code skill | One deep search per RQ; the skill writes `.csv` + `.md` + `meta.json` per RQ (see §5.2) |
 | D4 | Human-in-the-loop | Checkpoints after **RQ generation** and after **paper-list merge** | Everything else automatic |
 | D5 | OA sources | Unpaywall + OpenAlex → Semantic Scholar → arXiv / bioRxiv / medRxiv | Tried in that order per paper. **No CORE** (no API key) |
@@ -150,7 +150,9 @@ class LLMProvider(Protocol):
     def complete(self, messages, *, system=None, max_tokens=4096, temperature=0.2) -> str: ...
     def stream(self, messages, **kw) -> Iterator[str]: ...
 ```
-Implementations: `AnthropicProvider`, `OpenAICompatibleProvider` (OpenAI, Ollama, LM Studio).
+Implementations: `OpenRouterProvider` (default), `AnthropicProvider`, `OpenAICompatibleProvider` (OpenAI, Ollama,
+LM Studio). Selection per role (`synthesis`, `fast`), first match wins: `LITKB_MODEL_<ROLE>` → `LITKB_MODEL` →
+`[llm.<role>].model` → `[llm].model`; the provider resolves the same way via `LITKB_PROVIDER[_<ROLE>]`.
 Two **roles** in config — `synthesis` (report, RAG answers) and `fast` (cluster labels, RQ keyword expansion) — each mapped to a provider+model.
 
 ### 5.2 Undermind (D3, D18)
