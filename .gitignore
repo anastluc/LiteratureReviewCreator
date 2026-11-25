@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+projects/*
+!projects/.gitkeep
+library/*
+!library/.gitkeep
+frontend/node_modules/
+frontend/dist/
+.ruff_cache/
+.pytest_cache/

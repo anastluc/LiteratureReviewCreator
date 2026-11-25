@@ -1,0 +1,55 @@
+[project]
+name = "litkb"
+version = "0.1.0"
+description = "Concept note -> research questions -> Undermind -> retrieval -> queryable literature KB, report and map"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "typer>=0.12",
+  "pydantic>=2.7",
+  "python-dotenv>=1.0",
+  "pyyaml>=6.0",
+  "httpx>=0.27",
+  "tenacity>=8.3",
+  "pandas>=2.2",
+  "rapidfuzz>=3.9",
+  "lxml>=5.2",
+  "pypdf>=4.2",
+  "lancedb>=0.13",
+  "pyarrow>=16",
+  "sentence-transformers>=3.0",
+  "adapters>=1.0",
+  "scikit-learn>=1.5",
+  "opentsne>=1.0",
+  "umap-learn>=0.5",
+  "fastapi>=0.111",
+  "uvicorn[standard]>=0.30",
+  "sse-starlette>=2.1",
+  "playwright>=1.45",
+  "anthropic>=0.40",
+  "openai>=1.40",
+]
+
+[project.scripts]
+lit = "litkb.cli:app"
+
+[dependency-groups]
+dev = ["pytest>=8", "pytest-asyncio>=0.23", "respx>=0.21", "ruff>=0.5"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/litkb"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E701", "E731", "B008", "B905"]   # one-line properties; lambdas; typer defaults; zip strict
